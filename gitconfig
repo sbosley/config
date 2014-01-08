@@ -1,0 +1,39 @@
+[alias]
+    lc = log ORIG_HEAD.. --stat --no-merges
+    cp = cherry-pick
+    ci = commit
+    st = status
+    co = checkout
+    rb = rebase
+    rba = rebase --abort
+    rbc = rebase --continue
+    rbi = rebase -i
+    log = log --decorate
+    lol = log --graph --decorate --pretty=oneline --abbrev-commit
+    lola = log --all  --graph --decorate --pretty=oneline --abbrev-commit
+    svnci = svn dcommit
+    svnup = svn fetch
+    svnst = log trunk..
+    br = !sh -c 'git branch --color $* | grep -v " z-"' -
+    diffn = diff --no-ext-diff
+    resolve = !git-resolve
+    wtf = !git-wtf
+    fixup = commit --amend -C HEAD
+    unchanged = update-index --assume-unchanged
+    changed = update-index --no-assume-unchanged
+    pullr = pull --rebase
+[user]
+    name = Sam Bosley
+    email = sboz88@gmail.com
+[color]
+    ui = auto
+    diff = auto
+    status = auto
+    branch = auto
+[core]
+    whitespace = -trailing-space    
+    autocrlf = input
+[push]
+    default = matching
+[diff]
+    EDITOR = vim
