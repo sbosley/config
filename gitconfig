@@ -15,6 +15,8 @@
     svnup = svn fetch
     svnst = log trunk..
     br = !sh -c 'git branch --color $* | grep -v " z-"' -
+    dt = difftool
+    mt = mergetool
     diffn = diff --no-ext-diff
     resolve = !git-resolve
     wtf = !git-wtf
@@ -35,5 +37,15 @@
     autocrlf = input
 [push]
     default = matching
+[difftool "Kaleidoscope"]
+    cmd = ksdiff --partial-changeset --relative-path \"$MERGED\" -- \"$LOCAL\" \"$REMOTE\"
+[difftool]
+    prompt = false
 [diff]
-    EDITOR = vim
+    tool = Kaleidoscope
+[mergetool "Kaleidoscope"]
+    cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" \"$REMOTE\"
+[mergetool]
+    prompt = false
+[merge]
+    tool = Kaleidoscope
