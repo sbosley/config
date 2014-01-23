@@ -24,6 +24,7 @@
     unchanged = update-index --assume-unchanged
     changed = update-index --no-assume-unchanged
     pullr = pull --rebase
+    copr = !"f() { git fetch origin refs/pull/$1/head:pr/$1; git checkout pr/$1; }; f"
 [user]
     name = Sam Bosley
     email = sboz88@gmail.com
@@ -44,7 +45,8 @@
 [diff]
     tool = Kaleidoscope
 [mergetool "Kaleidoscope"]
-    cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" \"$REMOTE\"
+    cmd = ksdiff --merge --output \"$MERGED\" --base \"$BASE\" -- \"$LOCAL\" --snapshot \"$REMOTE\" --snapshot
+    trustExitCode = true
 [mergetool]
     prompt = false
 [merge]
