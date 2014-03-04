@@ -1,5 +1,4 @@
 [alias]
-    lc = log ORIG_HEAD.. --stat --no-merges
     cp = cherry-pick
     ci = commit
     st = status
@@ -11,20 +10,16 @@
     log = log --decorate
     lol = log --graph --decorate --pretty=oneline --abbrev-commit
     lola = log --all  --graph --decorate --pretty=oneline --abbrev-commit
-    svnci = svn dcommit
-    svnup = svn fetch
-    svnst = log trunk..
     br = !sh -c 'git branch --color $* | grep -v " z-"' -
     dt = difftool
     mt = mergetool
     diffn = diff --no-ext-diff
-    resolve = !git-resolve
-    wtf = !git-wtf
     fixup = commit --amend -C HEAD
     unchanged = update-index --assume-unchanged
     changed = update-index --no-assume-unchanged
     pullr = pull --rebase
     copr = !"f() { git fetch origin refs/pull/$1/head:pr/$1; git checkout pr/$1; }; f"
+	aliases = !"f() { git config --list | grep alias | sed -e 's/alias.//' -e 's/=/ = /'; }; f"
 [user]
     name = Sam Bosley
     email = sboz88@gmail.com
