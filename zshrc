@@ -89,6 +89,15 @@ elif [ "$TERM" != "dumb" ]; then
     alias ls='ls --color'
 fi
 
+################################################################### java
+export JAVA_8_HOME=$(/usr/libexec/java_home -v1.8)
+export JAVA_6_HOME=$(/usr/libexec/java_home -v1.6)
+
+alias java6='export JAVA_HOME=$JAVA_6_HOME'
+alias java8='export JAVA_HOME=$JAVA_8_HOME'
+
+export JAVA_HOME=$JAVA_8_HOME
+
 ################################################################### utilities
 function freq() {
     sort $* | uniq -c | sort -rn;
@@ -98,19 +107,19 @@ function freq() {
 edit_command_line () {
     # edit current line in $EDITOR
     local tmpfile=${TMPPREFIX:-/tmp/zsh}ecl$$
- 
+
     print -R - "$PREBUFFER$BUFFER" >$tmpfile
     exec </dev/tty
     e $tmpfile
     zle kill-buffer
     BUFFER=${"$(<$tmpfile)"/$PREBUFFER/}
     CURSOR=$#BUFFER
- 
+
     command rm -f $tmpfile
     zle redisplay
 }
 zle -N edit_command_line
- 
+
 # ever used this :?
 edit_command_output () {
     local output
