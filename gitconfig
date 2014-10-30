@@ -15,6 +15,7 @@
     mt = mergetool
     diffn = diff --no-ext-diff
     fixup = commit --amend -C HEAD
+    reword = commit --amend -m
     unchanged = update-index --assume-unchanged
     changed = update-index --no-assume-unchanged
     pullr = pull --rebase
@@ -29,7 +30,7 @@
     status = auto
     branch = auto
 [core]
-    whitespace = -trailing-space    
+    whitespace = -trailing-space
     autocrlf = input
 [push]
     default = matching
