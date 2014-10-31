@@ -32,6 +32,7 @@
 [core]
     whitespace = -trailing-space
     autocrlf = input
+    editor = atom --wait
 [push]
     default = matching
 [difftool "Kaleidoscope"]
