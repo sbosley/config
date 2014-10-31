@@ -99,8 +99,9 @@ alias java8='export JAVA_HOME=$JAVA_8_HOME'
 export JAVA_HOME=$JAVA_8_HOME
 
 ################################################################### utilities
-function freq() {
-    sort $* | uniq -c | sort -rn;
+# count sloc
+sloc () {
+    command find $1 -name "*.$2" | xargs wc -l
 }
 
 # from zsh-users
