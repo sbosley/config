@@ -7,7 +7,7 @@
     rba = rebase --abort
     rbc = rebase --continue
     rbi = rebase -i
-    log = log --decorate
+    lo = log --decorate --oneline
     lol = log --graph --decorate --pretty=oneline --abbrev-commit
     lola = log --all  --graph --decorate --pretty=oneline --abbrev-commit
     br = !sh -c 'git branch --color $* | grep -v " z-"' -
@@ -19,8 +19,8 @@
     unchanged = update-index --assume-unchanged
     changed = update-index --no-assume-unchanged
     pullr = pull --rebase
-    copr = !"f() { git fetch origin refs/pull/$1/head:pr/$1; git checkout pr/$1; }; f"
-	aliases = !"f() { git config --list | grep alias | sed -e 's/alias.//' -e 's/=/ = /'; }; f"
+    copr = !"f() { git show-ref -q --verify refs/heads/pr_$1; if [ $? -ne 0 ] ; then git fetch origin refs/pull/$1/head:pr_$1; git checkout pr_$1; else git checkout pr_$1; git pull --rebase origin refs/pull/$1/head; fi; }; f"
+    aliases = !"f() { git config --list | grep alias | sed -e 's/alias.//' -e 's/=/ = /'; }; f"
 [user]
     name = Sam Bosley
     email = sboz88@gmail.com

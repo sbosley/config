@@ -101,7 +101,7 @@ export JAVA_HOME=$JAVA_8_HOME
 ################################################################### utilities
 # count sloc
 sloc () {
-    command find $1 -name "*.$2" | xargs wc -l
+    command find $1 -name "*.$2" | xargs wc -l | sort -n -r -k2
 }
 
 # from zsh-users
