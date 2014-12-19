@@ -45,7 +45,7 @@ plugins=(git brew osx)
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
-export PATH=$PATH:/usr/local/git/bin:/Users/Sam/Code/android-sdk-mac_x86/tools:/Users/Sam/Code/android-sdk-mac_x86/platform-tools:/Users/Sam/.rvm/gems/ruby-1.9.3-p0/bin:/Users/Sam/.rvm/gems/ruby-1.9.3-p0@global/bin:/Users/Sam/.rvm/rubies/ruby-1.9.3-p0/bin:/Users/Sam/.rvm/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/git/bin
+export PATH=$PATH:/Users/Sam/Code/android-sdk-mac_x86/tools:/Users/Sam/Code/android-sdk-mac_x86/platform-tools
 
 ################################################################### prompt
 
