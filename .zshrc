@@ -45,7 +45,8 @@ plugins=(git brew osx)
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
-export PATH=$PATH:/Users/Sam/Code/android-sdk-mac_x86/tools:/Users/Sam/Code/android-sdk-mac_x86/platform-tools
+ANDROID_SDK=/Users/sbosley/Library/Android/sdk
+export PATH=$PATH:$ANDROID_SDK/tools:$ANDROID_SDK/platform-tools:$ANDROID_SDK/ndk-bundle
 
 ################################################################### prompt
 
@@ -72,7 +73,7 @@ RETURN_CODE=%(?.."%{${fg[red]}%}"[!]"%{${fg[default]}%}" )
 export RPS1=${RETURN_CODE}${RPS1}
 
 ################################################################### env
-EDITOR=vim
+EDITOR=atom
 
 # return if not interactive
 [ -z "$PS1" ] && return
@@ -91,12 +92,13 @@ fi
 
 ################################################################### java
 export JAVA_8_HOME=$(/usr/libexec/java_home -v1.8)
-export JAVA_6_HOME=$(/usr/libexec/java_home -v1.6)
+# export JAVA_6_HOME=$(/usr/libexec/java_home -v1.6)
 
 alias java6='export JAVA_HOME=$JAVA_6_HOME'
 alias java8='export JAVA_HOME=$JAVA_8_HOME'
 
 export JAVA_HOME=$JAVA_8_HOME
+export J2OBJC_HOME=/Users/sbosley/Code/j2objc-1.1
 
 ################################################################### utilities
 # count sloc
