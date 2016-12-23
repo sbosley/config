@@ -51,15 +51,16 @@ export PATH=$PATH:$ANDROID_SDK/tools:$ANDROID_SDK/platform-tools:$ANDROID_SDK/nd
 ################################################################### prompt
 
 # Copied and modified from robbyrussel theme
-export PROMPT='%{$fg[red]%}# %{$fg[cyan]%}%c %{$fg_bold[blue]%}$(git_prompt_info)%{$fg_bold[blue]%} % %{$reset_color%}'
+local ret_status="%(?:%{$fg[green]%}➜ :%{$fg[red]%}➜ )"
+PROMPT='${ret_status} %{$fg_bold[cyan]%}%c%{$reset_color%} %F{033}$(git_prompt_info)%f % %{$reset_color%}'
 
 ZSH_THEME_GIT_PROMPT_PREFIX="git:(%{$fg[red]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[blue]%}) %{$fg[yellow]%}✗%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[blue]%})"
-ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE="%{$fg_bold[magenta]%}↓%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE="%{$fg_bold[magenta]%}↑%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE="%{$fg_bold[magenta]%}↕%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_DIRTY="%F{033}) %{$fg[yellow]%}✗%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_CLEAN="%F{033})"
+ZSH_THEME_GIT_PROMPT_BEHIND_REMOTE=" %{$fg_bold[magenta]%}↓%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_AHEAD_REMOTE=" %{$fg_bold[magenta]%}↑%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE=" %{$fg_bold[magenta]%}↕%{$reset_color%}"
 
 #source ~/.zsh-extras/zsh-git-prompt/zshrc.sh
 
