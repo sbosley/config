@@ -92,17 +92,12 @@ elif [ "$TERM" != "dumb" ]; then
 fi
 
 ################################################################### java
-export JAVA_8_HOME=$(/usr/libexec/java_home -v1.8)
-# export JAVA_6_HOME=$(/usr/libexec/java_home -v1.6)
-
-alias java6='export JAVA_HOME=$JAVA_6_HOME'
-alias java8='export JAVA_HOME=$JAVA_8_HOME'
-
-export JAVA_HOME=$JAVA_8_HOME
-export J2OBJC_HOME=/Users/sbosley/Code/j2objc-1.1
+# export JAVA_HOME=$(/usr/libexec/java_home -v1.8)
+# export J2OBJC_HOME=/Users/sbosley/Code/j2objc-1.1
 
 ################################################################### utilities
-# count sloc
-sloc () {
+sloc () { # count sloc
     command find $1 -name "*.$2" | xargs wc -l | sort -n -r -k2
 }
+
+alias https='http --default-scheme=https'
