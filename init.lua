@@ -3,21 +3,21 @@ hs.window.animationDuration = 0
 function adjustWindowFrame(transform)
   if transform == nil then return end
 
-  local win = hs.window.focusedWindow():frame()
-  local screen = win:screen():frame()
+  local win = hs.window.focusedWindow()
+  local winFrame = win:frame()
 
-  transform(f, screen)
-  win:setFrame(f)
+  transform(winFrame, win:screen():frame())
+  win:setFrame(winFrame)
 end
 
-function fillFrame(post)
+function fillFrame(after)
   adjustWindowFrame(function(win, screen)
     win.x = screen.x
     win.y = screen.y
     win.w = screen.w
     win.h = screen.h
+    if after then after(win, screen) end
   end)
-  if post != nil then post(win, screen) end
 end
 
 pushModifiers = {"ctrl", "cmd"}
@@ -99,58 +99,45 @@ hs.hotkey.bind(moveModifiers, ",", function()
   end)
 end)
 
+function resize(dim, getNewSize)
+  local resizePercentage = 5
+  local resizeDivisor = 100 / resizePercentage
+  adjustWindowFrame(function(win, screen)
+    if (dim == "x") then
+      win.w = getNewSize(screen.w / resizeDivisor, win.x, win.w, screen.x, screen.w)
+    else
+      win.h = getNewSize(screen.h / resizeDivisor, win.y, win.h, screen.y, screen.h)
+    end
+  end)
+end
+
+function resizePositive(dim)
+  resize(dim, function(resizeAmount, winOrigin, winSize, screenOrigin, screenSize)
+    return math.min(winSize + resizeAmount, screenOrigin + screenSize - winOrigin)
+  end)
+end
+
+function resizeNegative(dim)
+  resize(dim, function(resizeAmount, winOrigin, winSize, screenOrigin, screenSize)
+    return math.max(winSize - resizeAmount, resizeAmount)
+  end)
+end
+
 resizePositiveModifiers = {"cmd", "alt"}
-resizePercentage = 5
-resizeDivisor = 100 / resizePercentage
-
-function xResizeAmount(screen)
-  return screen.w / resizeDivisor
-end
-
-function yResizeAmount(screen)
-  return screen.h / resizeDivisor
-end
-
 hs.hotkey.bind(resizePositiveModifiers, "L", function()
-  adjustWindowFrame(function(win, screen)
-    local newW = win.w + xResizeAmount(screen)
-    if win.x + newW > screen.x + screen.w then
-      newW = screen.x + screen.w - win.x
-    end
-    win.w = newW
-  end)
-end)
-
-hs.hotkey.bind(resizePositiveModifiers, "J", function()
-  adjustWindowFrame(function(win, screen)
-    local xResize = xResizeAmount(screen)
-    local newW = win.w - xResize
-    if newW < xResize then
-      newW = xResize
-    end
-    win.w = newW
-  end)
-end)
-
-hs.hotkey.bind(resizePositiveModifiers, "I", function()
-  adjustWindowFrame(function(win, screen)
-    local yResize = yResizeAmount(screen)
-    local newH = win.h - yResize
-    if newH < yResize then
-      newH = yResize
-    end
-    win.h = newH
-  end)
+  resizePositive("x")
 end)
 
 hs.hotkey.bind(resizePositiveModifiers, ",", function()
-  adjustWindowFrame(function(win, screen)
-    local newH = win.h + yResizeAmount(screen)
-    if win.y + newH > screen.y + screen.h then
-      newH = screen.y + screen.h - win.y
-    end
-    win.h = newH
-  end)
+  resizePositive("y")
+end)
+
+hs.hotkey.bind(resizePositiveModifiers, "J", function()
+  resizeNegative("x")
+end)
+
+hs.hotkey.bind(resizePositiveModifiers, "I", function()
+  resizeNegative("y")
 end)
 
 function throw(screenNumber)
@@ -162,7 +149,6 @@ function throw(screenNumber)
 end
 
 throwModifiers = {"cmd", "alt"}
-
 hs.hotkey.bind(throwModifiers, "1", function() throw(1) end)
 hs.hotkey.bind(throwModifiers, "2", function() throw(2) end)
 hs.hotkey.bind(throwModifiers, "3", function() throw(3) end)
