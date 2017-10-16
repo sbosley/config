@@ -92,8 +92,7 @@ elif [ "$TERM" != "dumb" ]; then
 fi
 
 ################################################################### java
-# export JAVA_HOME=$(/usr/libexec/java_home -v1.8)
-# export J2OBJC_HOME=/Users/sbosley/Code/j2objc-1.1
+export JAVA_HOME=$(/usr/libexec/java_home -v1.8)
 
 ################################################################### utilities
 sloc () { # count sloc

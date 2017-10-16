@@ -47,16 +47,21 @@ hs.hotkey.bind(pushModifiers, ",", function()
   end)
 end)
 
-function move(dim, getNewOrigin)
-  local movePercentage = 5
-  local moveDivisor = 100 / movePercentage
+function adjustByPercentage(dim, percentage, getNewValue, useOrigin)
   adjustWindowFrame(function(win, screen)
-    if (dim == "x") then
-      win.x = getNewOrigin(screen.w / moveDivisor, win.x, win.w, screen.x, screen.w)
+    if dim == "x" then
+      local newValue = getNewValue(screen.w * percentage / 100, win.x, win.w, screen.x, screen.w)
+      if useOrigin then win.x = newValue else win.w = newValue end
     else
-      win.y = getNewOrigin(screen.h / moveDivisor, win.y, win.h, screen.y, screen.h)
+      local newValue = getNewValue(screen.h * percentage / 100, win.y, win.h, screen.y, screen.h)
+      if useOrigin then win.y = newValue else win.h = newValue end
     end
   end)
+end
+
+function move(dim, getNewOrigin)
+  local movePercentage = 5
+  adjustByPercentage(dim, movePercentage, getNewOrigin, true)
 end
 
 function movePositive(dim)
@@ -72,32 +77,14 @@ function moveNegative(dim)
 end
 
 moveModifiers = {"shift", "alt"}
-hs.hotkey.bind(moveModifiers, "L", function()
-  movePositive("x")
-end)
-
-hs.hotkey.bind(moveModifiers, ",", function()
-  movePositive("y")
-end)
-
-hs.hotkey.bind(moveModifiers, "J", function()
-  moveNegative("x")
-end)
-
-hs.hotkey.bind(moveModifiers, "I", function()
-  moveNegative("y")
-end)
+hs.hotkey.bind(moveModifiers, "L", function() movePositive("x") end)
+hs.hotkey.bind(moveModifiers, ",", function() movePositive("y") end)
+hs.hotkey.bind(moveModifiers, "J", function() moveNegative("x") end)
+hs.hotkey.bind(moveModifiers, "I", function() moveNegative("y") end)
 
 function resize(dim, getNewSize)
   local resizePercentage = 5
-  local resizeDivisor = 100 / resizePercentage
-  adjustWindowFrame(function(win, screen)
-    if (dim == "x") then
-      win.w = getNewSize(screen.w / resizeDivisor, win.x, win.w, screen.x, screen.w)
-    else
-      win.h = getNewSize(screen.h / resizeDivisor, win.y, win.h, screen.y, screen.h)
-    end
-  end)
+  adjustByPercentage(dim, resizePercentage, getNewSize, false)
 end
 
 function resizePositive(dim)
@@ -112,22 +99,11 @@ function resizeNegative(dim)
   end)
 end
 
-resizePositiveModifiers = {"cmd", "alt"}
-hs.hotkey.bind(resizePositiveModifiers, "L", function()
-  resizePositive("x")
-end)
-
-hs.hotkey.bind(resizePositiveModifiers, ",", function()
-  resizePositive("y")
-end)
-
-hs.hotkey.bind(resizePositiveModifiers, "J", function()
-  resizeNegative("x")
-end)
-
-hs.hotkey.bind(resizePositiveModifiers, "I", function()
-  resizeNegative("y")
-end)
+resizeModifiers = {"cmd", "alt"}
+hs.hotkey.bind(resizeModifiers, "L", function() resizePositive("x") end)
+hs.hotkey.bind(resizeModifiers, ",", function() resizePositive("y") end)
+hs.hotkey.bind(resizeModifiers, "J", function() resizeNegative("x") end)
+hs.hotkey.bind(resizeModifiers, "I", function() resizeNegative("y") end)
 
 function throw(screenNumber)
   local screens = hs.screen.allScreens()
