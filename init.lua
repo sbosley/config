@@ -1,7 +1,7 @@
 hs.window.animationDuration = 0
 
 function adjustWindowFrame(transform)
-  if transform == nil then return end
+  if not transform then return end
 
   local win = hs.window.focusedWindow()
   local winFrame = win:frame()
@@ -21,7 +21,6 @@ function fillFrame(after)
 end
 
 pushModifiers = {"ctrl", "cmd"}
-
 hs.hotkey.bind(pushModifiers, "L", function()
   fillFrame(function(win, screen)
     win.x = screen.x + (screen.w / 2)
@@ -48,55 +47,45 @@ hs.hotkey.bind(pushModifiers, ",", function()
   end)
 end)
 
+function move(dim, getNewOrigin)
+  local movePercentage = 5
+  local moveDivisor = 100 / movePercentage
+  adjustWindowFrame(function(win, screen)
+    if (dim == "x") then
+      win.x = getNewOrigin(screen.w / moveDivisor, win.x, win.w, screen.x, screen.w)
+    else
+      win.y = getNewOrigin(screen.h / moveDivisor, win.y, win.h, screen.y, screen.h)
+    end
+  end)
+end
+
+function movePositive(dim)
+  move(dim, function(moveAmount, winOrigin, winSize, screenOrigin, screenSize)
+    return math.min(winOrigin + moveAmount, screenOrigin + screenSize - winSize)
+  end)
+end
+
+function moveNegative(dim)
+  move(dim, function(moveAmount, winOrigin, winSize, screenOrigin, screenSize)
+    return math.max(winOrigin - moveAmount, screenOrigin)
+  end)
+end
+
 moveModifiers = {"shift", "alt"}
-movePercentage = 5
-moveDivisor = 100 / movePercentage
-function xNudgeAmount(screen)
-  return screen.w / moveDivisor
-end
-
-function yNudgeAmount(screen)
-  return screen.h / moveDivisor
-end
-
 hs.hotkey.bind(moveModifiers, "L", function()
-  adjustWindowFrame(function (win, screen)
-    local newX = win.x + xNudgeAmount(screen)
-    if newX + win.w > screen.x + screen.w then
-      newX = screen.x + screen.w - win.w
-    end
-    win.x = newX
-  end)
-end)
-
-hs.hotkey.bind(moveModifiers, "J", function()
-  adjustWindowFrame(function (win, screen)
-    local newX = win.x - xNudgeAmount(screen)
-    if newX < screen.x then
-      newX = screen.x
-    end
-    win.x = newX
-  end)
-end)
-
-hs.hotkey.bind(moveModifiers, "I", function()
-  adjustWindowFrame(function (win, screen)
-    local newY = win.y - yNudgeAmount(screen)
-    if newY < screen.y then
-      newY = screen.y
-    end
-    win.y = newY
-  end)
+  movePositive("x")
 end)
 
 hs.hotkey.bind(moveModifiers, ",", function()
-  adjustWindowFrame(function (win, screen)
-    local newY = win.y + yNudgeAmount(screen)
-    if newY + win.y > screen.y + screen.h then
-      newY = screen.y + screen.h - win.h
-    end
-    win.y = newY
-  end)
+  movePositive("y")
+end)
+
+hs.hotkey.bind(moveModifiers, "J", function()
+  moveNegative("x")
+end)
+
+hs.hotkey.bind(moveModifiers, "I", function()
+  moveNegative("y")
 end)
 
 function resize(dim, getNewSize)
