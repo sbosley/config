@@ -47,6 +47,42 @@ hs.hotkey.bind(pushModifiers, ",", function()
   end)
 end)
 
+hs.hotkey.bind(pushModifiers, "U", function()
+  fillFrame(function (win, screen)
+    win.w = screen.w / 2
+    win.h = screen.h / 2
+  end)
+end)
+
+hs.hotkey.bind(pushModifiers, "O", function()
+  fillFrame(function (win, screen)
+    win.x = screen.x + (screen.w / 2)
+    win.w = screen.w / 2
+    win.h = screen.h / 2
+  end)
+end)
+
+hs.hotkey.bind(pushModifiers, "M", function()
+  fillFrame(function (win, screen)
+    win.y = screen.y + (screen.h / 2)
+    win.w = screen.w / 2
+    win.h = screen.h / 2
+  end)
+end)
+
+hs.hotkey.bind(pushModifiers, ".", function()
+  fillFrame(function (win, screen)
+    win.x = screen.x + (screen.w / 2)
+    win.y = screen.y + (screen.h / 2)
+    win.w = screen.w / 2
+    win.h = screen.h / 2
+  end)
+end)
+
+hs.hotkey.bind(pushModifiers, "K", function()
+  fillFrame(nil)
+end)
+
 function adjustByPercentage(dim, percentage, getNewValue, useOrigin)
   adjustWindowFrame(function(win, screen)
     if dim == "x" then
