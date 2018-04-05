@@ -52,7 +52,8 @@ export PATH=$PATH:$ANDROID_SDK/tools:$ANDROID_SDK/platform-tools:$ANDROID_SDK/nd
 
 # Copied and modified from robbyrussel theme
 local ret_status="%(?:%{$fg[green]%}➜ :%{$fg[red]%}➜ )"
-PROMPT='${ret_status} %{$fg_bold[cyan]%}%c%{$reset_color%} %F{033}$(git_prompt_info)%f % %{$reset_color%}'
+local hostname_prompt=$(if [[ -n $SSH_CLIENT ]]; then echo " %n@%M"; else echo ""; fi)
+PROMPT='${ret_status}%{$reset_color%}${hostname_prompt} %{$fg_bold[cyan]%}%c%{$reset_color%} %F{033}$(git_prompt_info)%f % %{$reset_color%}'
 
 ZSH_THEME_GIT_PROMPT_PREFIX="git:(%{$fg[red]%}"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
@@ -65,7 +66,7 @@ ZSH_THEME_GIT_PROMPT_DIVERGED_REMOTE=" %{$fg_bold[magenta]%}↕%{$reset_color%}"
 #source ~/.zsh-extras/zsh-git-prompt/zshrc.sh
 
 if [ -z "$HOSTNAME" ]; then
-    HOSTNAME="%m"
+    HOSTNAME=$(hostname)
 fi
 
 RPS1=$'%{\e[0;33m%}%B(%D{%m-%d %H:%M})%b%{\e[0m%}'
@@ -93,6 +94,7 @@ fi
 
 ################################################################### java
 export JAVA_HOME=$(/usr/libexec/java_home -v1.8)
+# export J2OBJC_HOME=/Users/sbosley/Code/j2objc-1.1
 
 ################################################################### utilities
 sloc () { # count sloc
