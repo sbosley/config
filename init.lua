@@ -1,155 +1,68 @@
 hs.window.animationDuration = 0
 
-function adjustWindowFrame(transform)
-  if not transform then return end
+function pushWindow(rect)
+  hs.window.focusedWindow():moveToUnit(rect)
+end
 
+function moveWindow(delta)
+  hs.window.focusedWindow():move(delta, nil, true)
+end
+
+function resizeWindow(delta)
   local win = hs.window.focusedWindow()
-  local winFrame = win:frame()
-
-  transform(winFrame, win:screen():frame())
-  win:setFrame(winFrame)
+  local size = win:size()
+  size.w = size.w + delta.x
+  size.h = size.h + delta.y
+  win:setSize(size)
 end
 
-function fillFrame(after)
-  adjustWindowFrame(function(win, screen)
-    win.x = screen.x
-    win.y = screen.y
-    win.w = screen.w
-    win.h = screen.h
-    if after then after(win, screen) end
-  end)
-end
-
-pushModifiers = {"ctrl", "cmd"}
-hs.hotkey.bind(pushModifiers, "L", function()
-  fillFrame(function(win, screen)
-    win.x = screen.x + (screen.w / 2)
-    win.w = screen.w / 2
-  end)
-end)
-
-hs.hotkey.bind(pushModifiers, "J", function()
-  fillFrame(function(win, screen)
-    win.w = screen.w / 2
-  end)
-end)
-
-hs.hotkey.bind(pushModifiers, "I", function()
-  fillFrame(function (win, screen)
-    win.h = screen.h / 2
-  end)
-end)
-
-hs.hotkey.bind(pushModifiers, ",", function()
-  fillFrame(function (win, screen)
-    win.y = screen.y + (screen.h / 2)
-    win.h = screen.h / 2
-  end)
-end)
-
-hs.hotkey.bind(pushModifiers, "U", function()
-  fillFrame(function (win, screen)
-    win.w = screen.w / 2
-    win.h = screen.h / 2
-  end)
-end)
-
-hs.hotkey.bind(pushModifiers, "O", function()
-  fillFrame(function (win, screen)
-    win.x = screen.x + (screen.w / 2)
-    win.w = screen.w / 2
-    win.h = screen.h / 2
-  end)
-end)
-
-hs.hotkey.bind(pushModifiers, "M", function()
-  fillFrame(function (win, screen)
-    win.y = screen.y + (screen.h / 2)
-    win.w = screen.w / 2
-    win.h = screen.h / 2
-  end)
-end)
-
-hs.hotkey.bind(pushModifiers, ".", function()
-  fillFrame(function (win, screen)
-    win.x = screen.x + (screen.w / 2)
-    win.y = screen.y + (screen.h / 2)
-    win.w = screen.w / 2
-    win.h = screen.h / 2
-  end)
-end)
-
-hs.hotkey.bind(pushModifiers, "K", function()
-  fillFrame(nil)
-end)
-
-function adjustByPercentage(dim, percentage, getNewValue, useOrigin)
-  adjustWindowFrame(function(win, screen)
-    if dim == "x" then
-      local newValue = getNewValue(screen.w * percentage / 100, win.x, win.w, screen.x, screen.w)
-      if useOrigin then win.x = newValue else win.w = newValue end
-    else
-      local newValue = getNewValue(screen.h * percentage / 100, win.y, win.h, screen.y, screen.h)
-      if useOrigin then win.y = newValue else win.h = newValue end
-    end
-  end)
-end
-
-function move(dim, getNewOrigin)
-  local movePercentage = 5
-  adjustByPercentage(dim, movePercentage, getNewOrigin, true)
-end
-
-function movePositive(dim)
-  move(dim, function(moveAmount, winOrigin, winSize, screenOrigin, screenSize)
-    return math.min(winOrigin + moveAmount, screenOrigin + screenSize - winSize)
-  end)
-end
-
-function moveNegative(dim)
-  move(dim, function(moveAmount, winOrigin, winSize, screenOrigin, screenSize)
-    return math.max(winOrigin - moveAmount, screenOrigin)
-  end)
-end
-
-moveModifiers = {"shift", "alt"}
-hs.hotkey.bind(moveModifiers, "L", function() movePositive("x") end)
-hs.hotkey.bind(moveModifiers, ",", function() movePositive("y") end)
-hs.hotkey.bind(moveModifiers, "J", function() moveNegative("x") end)
-hs.hotkey.bind(moveModifiers, "I", function() moveNegative("y") end)
-
-function resize(dim, getNewSize)
-  local resizePercentage = 5
-  adjustByPercentage(dim, resizePercentage, getNewSize, false)
-end
-
-function resizePositive(dim)
-  resize(dim, function(resizeAmount, winOrigin, winSize, screenOrigin, screenSize)
-    return math.min(winSize + resizeAmount, screenOrigin + screenSize - winOrigin)
-  end)
-end
-
-function resizeNegative(dim)
-  resize(dim, function(resizeAmount, winOrigin, winSize, screenOrigin, screenSize)
-    return math.max(winSize - resizeAmount, resizeAmount)
-  end)
-end
-
-resizeModifiers = {"cmd", "alt"}
-hs.hotkey.bind(resizeModifiers, "L", function() resizePositive("x") end)
-hs.hotkey.bind(resizeModifiers, ",", function() resizePositive("y") end)
-hs.hotkey.bind(resizeModifiers, "J", function() resizeNegative("x") end)
-hs.hotkey.bind(resizeModifiers, "I", function() resizeNegative("y") end)
-
-function throw(screenNumber)
+function throwWindow(screenNumber)
   local screens = hs.screen.allScreens()
   if screenNumber > #screens then return end
 
   hs.window.focusedWindow():moveToScreen(screens[screenNumber])
-  fillFrame(nil)
+  pushWindow('[0,0 100x100]')
 end
+
+function increment(dir)
+  local screen = hs.window.focusedWindow():screen():frame()
+  if dir == "x" then
+    return screen.w * 5 / 100
+  else
+    return screen.h * 5 / 100
+  end
+end
+
+function plusX() return hs.geometry(increment("x"), 0) end
+function minusX() return hs.geometry(-1*increment("x"), 0) end
+function plusY() return hs.geometry(0, increment("y")) end
+function minusY() return hs.geometry(0, -1*increment("y")) end
+
+pushModifiers = {"ctrl", "cmd"}
+hs.hotkey.bind(pushModifiers, "L", function() pushWindow('[50,0 50x100]') end)
+hs.hotkey.bind(pushModifiers, "J", function() pushWindow('[0,0 50x100]') end)
+hs.hotkey.bind(pushModifiers, "I", function() pushWindow('[0,0 100x50]') end)
+hs.hotkey.bind(pushModifiers, ",", function() pushWindow('[0,50 100x50]') end)
+hs.hotkey.bind(pushModifiers, "U", function() pushWindow('[0,0 50x50]') end)
+hs.hotkey.bind(pushModifiers, "O", function() pushWindow('[50,0 50x50]') end)
+hs.hotkey.bind(pushModifiers, "M", function() pushWindow('[0,50 50x50]') end)
+hs.hotkey.bind(pushModifiers, ".", function() pushWindow('[50,50 50x50]') end)
+hs.hotkey.bind(pushModifiers, "K", function() pushWindow('[0,0 100x100]') end)
+
+moveModifiers = {"shift", "alt"}
+hs.hotkey.bind(moveModifiers, "L", function() moveWindow(plusX()) end)
+hs.hotkey.bind(moveModifiers, ",", function() moveWindow(plusY()) end)
+hs.hotkey.bind(moveModifiers, "J", function() moveWindow(minusX()) end)
+hs.hotkey.bind(moveModifiers, "I", function() moveWindow(minusY()) end)
+
+resizeModifiers = {"cmd", "alt"}
+hs.hotkey.bind(resizeModifiers, "L", function() resizeWindow(plusX()) end)
+hs.hotkey.bind(resizeModifiers, ",", function() resizeWindow(plusY()) end)
+hs.hotkey.bind(resizeModifiers, "J", function() resizeWindow(minusX()) end)
+hs.hotkey.bind(resizeModifiers, "I", function() resizeWindow(minusY()) end)
 
 throwModifiers = {"cmd", "alt"}
 hs.hotkey.bind(throwModifiers, "1", function() throw(1) end)
 hs.hotkey.bind(throwModifiers, "2", function() throw(2) end)
 hs.hotkey.bind(throwModifiers, "3", function() throw(3) end)
+hs.hotkey.bind(throwModifiers, "4", function() hs.application.find("Roon"):activate() end)
