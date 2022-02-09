@@ -40,13 +40,14 @@ ZSH_THEME="robbyrussell"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git brew osx)
+plugins=(git gcloud bazel docker)
 
 source $ZSH/oh-my-zsh.sh
-
 # Customize to your needs...
-ANDROID_SDK=/Users/sbosley/Library/Android/sdk
-export PATH=$PATH:$ANDROID_SDK/tools:$ANDROID_SDK/platform-tools:$ANDROID_SDK/ndk-bundle
+ANDROID_SDK=~/Library/Android/sdk
+CODE_ROOT=~/Code
+export GOPATH=$CODE_ROOT/go
+export PATH=$PATH:$GOPATH/bin:/usr/local/sbt/bin:/usr/local/protoc-3/bin:~/Library/Python/3.8/bin:$ANDROID_SDK/tools:$ANDROID_SDK/platform-tools:$ANDROID_SDK/ndk-bundle:$CODE_ROOT/flutter/bin:$CODE_ROOT/scripts:/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin
 
 ################################################################### prompt
 
@@ -75,7 +76,7 @@ RETURN_CODE=%(?.."%{${fg[red]}%}"[!]"%{${fg[default]}%}" )
 export RPS1=${RETURN_CODE}${RPS1}
 
 ################################################################### env
-EDITOR=atom
+export EDITOR=vim
 
 # return if not interactive
 [ -z "$PS1" ] && return
@@ -93,12 +94,48 @@ elif [ "$TERM" != "dumb" ]; then
 fi
 
 ################################################################### java
-export JAVA_HOME=$(/usr/libexec/java_home -v1.8)
-# export J2OBJC_HOME=/Users/sbosley/Code/j2objc-1.1
+export JAVA_HOME=$(/usr/libexec/java_home -v11)
 
-################################################################### utilities
-sloc () { # count sloc
-    command find $1 -name "*.$2" | xargs wc -l | sort -n -r -k2
+################################################################### utilities and aliases
+alias bazel="bazelisk"
+
+audiomd5 () { # compute hash of audiodata
+    ffmpeg -i $1 -map 0:a -f md5 - 2>/dev/null
 }
 
-alias https='http --default-scheme=https'
+sloc () { # count sloc
+    find $1 -name "*.$2" | xargs wc -l | sort -n -r -k2
+}
+
+#################################################################### docker roon containers
+
+docker_build_roon_bridge() {
+	docker image build -t roon-bridge $CODE_ROOT/roon-api-grpc-bridge
+	docker image prune -f
+	docker container rm roon-bridge-container
+	docker container create -p 127.0.0.1:50051:50051 --network=roon-actions-network --name=roon-bridge-container roon-bridge
+}
+
+docker_build_roon_webhook() {
+	cd $CODE_ROOT/roon-actions-webhook
+	sbt clean 'Docker / publishLocal'
+	docker image prune -f
+	cd -
+}
+
+docker_start_roon_containers() {
+	docker container start roon-bridge-container
+	docker run -d --rm -p 127.0.0.1:9000:9000 --network=roon-actions-network --name=roon-actions-webhook-container roon-actions-webhook
+}
+
+docker_stop_roon_containers() {
+	docker container stop roon-actions-webhook-container
+	docker container stop roon-bridge-container
+}
+
+# The next line updates PATH for the Google Cloud SDK.
+if [ -f '/Users/sbosley/Code/google-cloud-sdk/path.zsh.inc' ]; then . '/Users/sbosley/Code/google-cloud-sdk/path.zsh.inc'; fi
+
+# The next line enables shell command completion for gcloud.
+if [ -f '/Users/sbosley/Code/google-cloud-sdk/completion.zsh.inc' ]; then . '/Users/sbosley/Code/google-cloud-sdk/completion.zsh.inc'; fi
+
