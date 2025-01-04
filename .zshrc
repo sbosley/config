@@ -47,7 +47,7 @@ source $ZSH/oh-my-zsh.sh
 ANDROID_SDK=~/Library/Android/sdk
 CODE_ROOT=~/Code
 export GOPATH=$CODE_ROOT/go
-export PATH=$PATH:$GOPATH/bin:/usr/local/sbt/bin:/usr/local/protoc-3/bin:~/Library/Python/3.8/bin:$ANDROID_SDK/tools:$ANDROID_SDK/platform-tools:$ANDROID_SDK/ndk-bundle:$CODE_ROOT/flutter/bin:$CODE_ROOT/scripts:/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin
+export PATH=$PATH:$GOPATH/bin:/usr/local/sbt/bin:/usr/local/protoc-3/bin:~/Library/Python/3.8/bin:$ANDROID_SDK/tools:$ANDROID_SDK/platform-tools:$ANDROID_SDK/ndk-bundle:$CODE_ROOT/flutter/bin:$CODE_ROOT/scripts:/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:~/.cargo/bin
 
 ################################################################### prompt
 

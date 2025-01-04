@@ -1,6 +1,7 @@
 hs.window.animationDuration = 0
 log = hs.logger.new("config")
 
+incrPct = 5
 roon = require("roon")
 
 function pushWindow(rect)
@@ -38,21 +39,19 @@ function throwWindow(screenNumber)
     if screenNumber > #screens then return end
 
     hs.window.focusedWindow():moveToScreen(screens[screenNumber])
-    pushWindow('[0,0 100x100]')()
+    pushWindow("[0,0 100x100]")()
   end
 end
 
-function incr(dim) return dim * 5 / 100 end
-
-function deltaX(mult)
+function deltaX(pct)
   return function(win)
-    return hs.geometry(incr(win:screen():frame().w * mult), 0)
+    return hs.geometry(win:screen():frame().w * pct / 100, 0)
   end
 end
 
-function deltaY(mult)
+function deltaY(pct)
   return function(win)
-    return hs.geometry(0, incr(win:screen():frame().h * mult))
+    return hs.geometry(0, win:screen():frame().h * pct / 100)
   end
 end
 
@@ -61,29 +60,29 @@ function changeRoonVolume(delta)
 end
 
 pushModifiers = {"ctrl", "cmd"}
-hs.hotkey.bind(pushModifiers, "L", pushWindow('[50,0 50x100]'))
-hs.hotkey.bind(pushModifiers, "J", pushWindow('[0,0 50x100]'))
-hs.hotkey.bind(pushModifiers, "I", pushWindow('[0,0 100x50]'))
-hs.hotkey.bind(pushModifiers, ",", pushWindow('[0,50 100x50]'))
-hs.hotkey.bind(pushModifiers, "U", pushWindow('[0,0 50x50]'))
-hs.hotkey.bind(pushModifiers, "O", pushWindow('[50,0 50x50]'))
-hs.hotkey.bind(pushModifiers, "M", pushWindow('[0,50 50x50]'))
-hs.hotkey.bind(pushModifiers, ".", pushWindow('[50,50 50x50]'))
-hs.hotkey.bind(pushModifiers, "K", pushWindow('[0,0 100x100]'))
-hs.hotkey.bind(pushModifiers, "left", changeScreen('moveOneScreenWest'))
-hs.hotkey.bind(pushModifiers, "right", changeScreen('moveOneScreenEast'))
+hs.hotkey.bind(pushModifiers, "L", pushWindow("[50,0 50x100]"))
+hs.hotkey.bind(pushModifiers, "J", pushWindow("[0,0 50x100]"))
+hs.hotkey.bind(pushModifiers, "I", pushWindow("[0,0 100x50]"))
+hs.hotkey.bind(pushModifiers, ",", pushWindow("[0,50 100x50]"))
+hs.hotkey.bind(pushModifiers, "U", pushWindow("[0,0 50x50]"))
+hs.hotkey.bind(pushModifiers, "O", pushWindow("[50,0 50x50]"))
+hs.hotkey.bind(pushModifiers, "M", pushWindow("[0,50 50x50]"))
+hs.hotkey.bind(pushModifiers, ".", pushWindow("[50,50 50x50]"))
+hs.hotkey.bind(pushModifiers, "K", pushWindow("[0,0 100x100]"))
+hs.hotkey.bind(pushModifiers, "left", changeScreen("moveOneScreenWest"))
+hs.hotkey.bind(pushModifiers, "right", changeScreen("moveOneScreenEast"))
 
 moveModifiers = {"shift", "alt"}
-hs.hotkey.bind(moveModifiers, "L", moveWindow(deltaX(1)))
-hs.hotkey.bind(moveModifiers, ",", moveWindow(deltaY(1)))
-hs.hotkey.bind(moveModifiers, "J", moveWindow(deltaX(-1)))
-hs.hotkey.bind(moveModifiers, "I", moveWindow(deltaY(-1)))
+hs.hotkey.bind(moveModifiers, "L", moveWindow(deltaX(incrPct)))
+hs.hotkey.bind(moveModifiers, ",", moveWindow(deltaY(incrPct)))
+hs.hotkey.bind(moveModifiers, "J", moveWindow(deltaX(-incrPct)))
+hs.hotkey.bind(moveModifiers, "I", moveWindow(deltaY(-incrPct)))
 
 resizeModifiers = {"cmd", "alt"}
-hs.hotkey.bind(resizeModifiers, "L", resizeWindow(deltaX(1)))
-hs.hotkey.bind(resizeModifiers, ",", resizeWindow(deltaY(1)))
-hs.hotkey.bind(resizeModifiers, "J", resizeWindow(deltaX(-1)))
-hs.hotkey.bind(resizeModifiers, "I", resizeWindow(deltaY(-1)))
+hs.hotkey.bind(resizeModifiers, "L", resizeWindow(deltaX(incrPct)))
+hs.hotkey.bind(resizeModifiers, ",", resizeWindow(deltaY(incrPct)))
+hs.hotkey.bind(resizeModifiers, "J", resizeWindow(deltaX(-incrPct)))
+hs.hotkey.bind(resizeModifiers, "I", resizeWindow(deltaY(-incrPct)))
 
 throwModifiers = {"cmd", "alt"}
 hs.hotkey.bind(throwModifiers, "1", throwWindow(1))
@@ -93,7 +92,3 @@ hs.hotkey.bind(throwModifiers, "3", throwWindow(3))
 volumeModifiers = {"cmd"}
 hs.hotkey.bind(volumeModifiers, "f11", changeRoonVolume(-2))
 hs.hotkey.bind(volumeModifiers, "f12", changeRoonVolume(2))
-
-bigVolumeModifiers = {"cmd", "alt", "ctrl"}
-hs.hotkey.bind(bigVolumeModifiers, "f11", changeRoonVolume(-4))
-hs.hotkey.bind(bigVolumeModifiers, "f12", changeRoonVolume(4))

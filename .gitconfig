@@ -19,6 +19,8 @@
     unchanged = update-index --assume-unchanged
     changed = update-index --no-assume-unchanged
     pullr = pull --rebase
+    forget = rm --cached
+    forgetdir = rm -r --cached
     copr = !"f() { git show-ref -q --verify refs/heads/pr_$1; if [ $? -ne 0 ] ; then git fetch origin refs/pull/$1/head:pr_$1; git checkout pr_$1; else git checkout pr_$1; git pull --rebase origin refs/pull/$1/head; fi; }; f"
     aliases = !"f() { git config --list | grep alias | sed -e 's/alias.//' -e 's/=/ = /'; }; f"
 [user]
@@ -32,10 +34,15 @@
 [core]
     whitespace = -trailing-space
     autocrlf = input
-    editor = atom --wait
+    editor = vim 
 [push]
     default = matching
 [difftool]
     prompt = false
 [mergetool]
     prompt = false
+[filter "lfs"]
+    process = git-lfs filter-process
+    required = true
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
